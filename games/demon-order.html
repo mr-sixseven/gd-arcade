@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Demon Order — GD Arcade</title>
+<meta name="description" content="Drag real demons into difficulty order. Use official in-game tiers or exact Pointercrate positions, then reveal the correct order.">
+<meta name="theme-color" content="#05070e">
+<link rel="icon" href="../assets/icons/cube.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="order-game">
+<a class="skip-link" href="#gameMain">Skip to game</a>
+<header id="siteHeader"></header>
+<main class="page" id="gameMain">
+  <section class="game-hero">
+    <div class="game-hero-main">
+      <span class="game-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 4v16M4 8l4-4 4 4"/><path d="M16 20V4M12 16l4 4 4-4"/><path d="M20 10h-8M20 14h-8"/></svg></span>
+      <div>
+        <h1 class="game-title">Demon Order</h1>
+        <p class="game-sub">Six demons, one correct ladder. Drag them — or use the arrow buttons — from hardest to easiest, then check the order. Every round names its ranking source.</p>
+      </div>
+    </div>
+    <div class="game-hero-side">
+      <span class="chip" id="dailyBadge">Daily ladder</span>
+      <button class="btn" type="button" data-open-help>How to play</button>
+      <button class="btn" type="button" data-open-game-stats>Stats</button>
+    </div>
+  </section>
+
+  <div class="game-layout">
+    <section class="game-main panel" aria-label="Demon Order game">
+      <div class="tabs" role="group" aria-label="Game mode">
+        <button class="tab" type="button" data-mode="daily" aria-pressed="true">Daily</button>
+        <button class="tab" type="button" data-mode="practice" aria-pressed="false">Practice</button>
+        <button class="tab" type="button" data-mode="endless" aria-pressed="false">Endless</button>
+      </div>
+
+      <div class="order-toolbar">
+        <span class="toolbar-label">Difficulty</span>
+        <div class="segmented" id="orderDifficulty" role="group" aria-label="Difficulty multiplier">
+          <button class="seg" type="button" data-diff="easy" aria-pressed="false">Easy · 1×</button>
+          <button class="seg" type="button" data-diff="normal" aria-pressed="true">Normal · 1.5×</button>
+          <button class="seg" type="button" data-diff="hard" aria-pressed="false">Hard · 2×</button>
+        </div>
+        <span class="toolbar-label">Source</span>
+        <div class="segmented" id="orderSource" role="group" aria-label="Ranking source">
+          <button class="seg" type="button" data-source="pointercrate" aria-pressed="true">Pointercrate</button>
+          <button class="seg" type="button" data-source="tiers" aria-pressed="false">In-game tiers</button>
+        </div>
+      </div>
+
+      <div class="order-meta-row">
+        <span class="chip pink" id="orderSourceChip">Source: Pointercrate positions</span>
+        <span class="order-round-info" id="orderRoundInfo">Daily · 6 levels</span>
+        <span class="order-score-info" id="orderScoreInfo">0 pts</span>
+      </div>
+
+      <div class="order-axis" aria-hidden="true"><span>↑ Hardest</span><span>Easiest ↓</span></div>
+      <div class="drag-hint"><span data-icon="sort"></span> Drag a row, use its arrow buttons, or focus a row and press ↑ / ↓.</div>
+
+      <div class="order-board" id="orderBoard" aria-live="polite"></div>
+
+      <div class="order-actions">
+        <button class="btn primary" id="orderCheck" type="button">Check order</button>
+        <button class="btn" id="orderShuffle" type="button">Shuffle</button>
+        <button class="btn primary" id="orderNext" type="button" hidden>Next round</button>
+        <button class="btn primary" id="orderShare" type="button" hidden>Share result</button>
+        <button class="btn" id="orderNew" type="button">Play practice</button>
+      </div>
+
+      <div class="order-result" id="orderResult" hidden></div>
+      <div class="order-mode-note" id="orderModeNote">Pointercrate positions are exact and unique. Position #1 is the hardest.</div>
+      <div class="next-row"><span>Next daily in</span><b data-countdown>--:--:--</b></div>
+    </section>
+
+    <aside class="game-side">
+      <div class="side-card">
+        <h3>Two ranking sources</h3>
+        <p class="side-tip"><b>Pointercrate</b> uses exact ranked positions. <b>In-game tiers</b> uses one level from each official demon tier, so the order is unambiguous.</p>
+        <p class="side-tip" style="margin-top:8px">Daily always uses six Pointercrate-ranked demons. Practice and Endless let you choose.</p>
+      </div>
+      <div class="side-card">
+        <h3>Scoring</h3>
+        <p class="side-tip">Each correctly placed demon scores <b>20 × its demon tier</b>. A perfect ladder adds a <b>100-point</b> bonus, then the round multiplier applies: Easy 1×, Normal 1.5×, Hard 2×.</p>
+      </div>
+      <div class="side-card">
+        <h3>Your Demon Order</h3>
+        <div class="side-stats" id="orderSideStats"></div>
+        <p class="tiny-note" style="margin-top:10px">Best score and completed ladders are stored per game. Endless keeps its own best run.</p>
+      </div>
+    </aside>
+  </div>
+  <p class="game-footnote"><span>Pointercrate positions are a snapshot and can change after list updates.</span><span>Tiers are the official in-game demon difficulties. Thumbnails: levelthumbs.prevter.me.</span></p>
+</main>
+<footer id="footerHost"></footer>
+
+<dialog id="helpDialog" aria-labelledby="helpTitle">
+  <div class="dialog-inner">
+    <div class="dialog-head"><div><h2 id="helpTitle">How to play Demon Order</h2><p>Sort the ladder from hardest at the top to easiest at the bottom.</p></div><button class="x-btn" data-close aria-label="Close">✕</button></div>
+    <ol class="how-list">
+      <li><span class="num">1</span><span>Drag rows into order, use the up/down buttons, or focus a row and press <b>↑</b> / <b>↓</b>.</span></li>
+      <li><span class="num">2</span><span>Press <b>Check order</b>. Correct positions turn green, wrong positions turn red, and the true order is revealed underneath.</span></li>
+      <li><span class="num">3</span><span>Daily is one fixed six-demon Pointercrate ladder. Endless continues after a perfect ladder and ends on the first wrong check.</span></li>
+      <li><span class="num">4</span><span>Difficulty changes the ladder size and points multiplier. The ranking source is always shown above the board.</span></li>
+    </ol>
+    <p class="arrow-note"><b>Source note:</b> Pointercrate #1 is the hardest ranked demon. In-game tiers use the official Easy / Medium / Hard / Insane / Extreme Demon labels.</p>
+  </div>
+</dialog>
+
+<dialog id="gameStatsDialog" aria-labelledby="statsTitle">
+  <div class="dialog-inner">
+    <div class="dialog-head"><div><h2 id="statsTitle">Demon Order stats</h2><p>Daily ladders and personal scoring records.</p></div><button class="x-btn" data-close aria-label="Close">✕</button></div>
+    <div class="stats-grid">
+      <div class="stat"><b id="statPlayed">0</b><span>Daily played</span></div>
+      <div class="stat"><b id="statWin">0%</b><span>Perfect rate</span></div>
+      <div class="stat"><b id="statBestScore">0</b><span>Best score</span></div>
+      <div class="stat"><b id="statCompleted">0</b><span>Perfect ladders</span></div>
+    </div>
+    <p class="dist-title">Recent daily scores</p>
+    <div class="dist" id="orderHistory"></div>
+    <div class="stats-foot"><span class="stats-note">Best score includes practice and endless.</span><button class="link-btn" id="resetOrder">Reset Demon Order stats</button></div>
+  </div>
+</dialog>
+
+<script src="../data/levels.js"></script>
+<script src="../data/songs.js"></script>
+<script src="../data/demonlist.js"></script>
+<script src="../data/connections.js"></script>
+<script src="../js/core.js"></script>
+<script src="demon-order.js"></script>
+</body>
+</html>

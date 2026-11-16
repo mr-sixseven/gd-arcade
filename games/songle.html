@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Songle — GD Arcade</title>
+<meta name="description" content="Name the Geometry Dash song from a growing Newgrounds audio excerpt. One second first, then longer after every miss.">
+<meta name="theme-color" content="#05070e">
+<!-- Newgrounds blocks audio hotlinks when a non-Newgrounds Referer is sent. -->
+<meta name="referrer" content="no-referrer">
+<link rel="icon" href="../assets/icons/cube.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="songle-game">
+<a class="skip-link" href="#gameMain">Skip to game</a>
+<header id="siteHeader"></header>
+<main class="page" id="gameMain">
+  <section class="game-hero">
+    <div class="game-hero-main">
+      <span class="game-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span>
+      <div>
+        <h1 class="game-title">Songle</h1>
+        <p class="game-sub">Name the Geometry Dash track from a short excerpt. Start with one second — every miss buys you more audio. All streams come from the artists’ official Newgrounds pages.</p>
+      </div>
+    </div>
+    <div class="game-hero-side">
+      <span class="chip" id="dailyBadge">Daily track</span>
+      <button class="btn" type="button" data-open-help>How to play</button>
+      <button class="btn" type="button" data-open-game-stats>Stats</button>
+    </div>
+  </section>
+
+  <div class="game-layout">
+    <section class="game-main panel" aria-label="Songle game">
+      <div class="tabs" role="group" aria-label="Game mode">
+        <button class="tab" type="button" data-mode="daily" aria-pressed="true">Daily</button>
+        <button class="tab" type="button" data-mode="practice" aria-pressed="false">Practice</button>
+        <button class="tab" type="button" data-mode="endless" aria-pressed="false">Endless</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <span class="thumb-attempts" id="songAttempts" aria-label="Attempts remaining"></span>
+          <span class="chip" id="songAttemptChip">6 attempts</span>
+          <span class="chip pink" id="songStageChip">1s excerpt</span>
+        </div>
+        <div class="toolbar-right">
+          <span class="chip cyan" id="songScoreChip">0 pts</span>
+          <span class="chip green" id="songStreakChip">0 streak</span>
+        </div>
+      </div>
+
+      <div class="song-stage">
+        <div class="song-art"><span data-icon="music"></span></div>
+        <p class="song-kicker" id="songKicker">Daily audio mystery</p>
+        <div class="song-wave" id="songWave" aria-hidden="true"></div>
+        <audio id="songAudio" preload="none"></audio>
+        <div class="song-controls">
+          <button class="song-control no-sfx" id="songReplay" type="button" aria-label="Replay the excerpt from the start" title="Replay excerpt"><span data-icon="refresh"></span></button>
+          <button class="song-play no-sfx" id="songPlay" type="button" aria-label="Play the excerpt"><span id="songPlayIcon"></span></button>
+          <span class="song-volume"><span data-icon="volume"></span><input id="songVolume" type="range" min="0" max="100" step="5" value="60" aria-label="Audio volume"></span>
+        </div>
+        <div class="song-progress" aria-hidden="true"><i id="songProgressFill"></i></div>
+        <p class="song-excerpt" id="songExcerpt">Excerpt length <b id="songExcerptLength">1s</b> · <span id="songExcerptNote">Press play to hear it.</span></p>
+        <p class="song-source" id="songSource">Audio streams from Newgrounds’ official CDN. The track and artist links appear when the answer is revealed. Nothing is downloaded or hosted by GD Arcade.</p>
+        <div class="audio-error" id="songAudioError" hidden></div>
+      </div>
+
+      <div class="search-row song-guess">
+        <div class="search-field">
+          <input id="songInput" class="search-input" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="songSuggestions" aria-activedescendant="" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Search the 86-track Newgrounds catalogue…">
+          <ul class="suggestions" id="songSuggestions" role="listbox" aria-label="Song suggestions"></ul>
+        </div>
+        <button class="btn primary" id="songGuessBtn" type="button">Guess</button>
+      </div>
+      <p class="tiny-note" id="songSearchNote" style="margin-top:7px">Search by song title or artist. Pick a suggestion before guessing.</p>
+
+      <div class="song-hints" id="songHints" aria-live="polite"></div>
+      <div id="songResult" aria-live="polite" hidden></div>
+
+      <div class="actions">
+        <button class="btn primary" id="songNext" hidden type="button">Next song</button>
+        <button class="btn primary" id="songShare" hidden type="button"><span data-icon="share"></span> Share result</button>
+        <button class="btn" id="songNew" type="button">New song</button>
+      </div>
+      <div class="next-row"><span>Next daily in</span><b data-countdown>--:--:--</b></div>
+    </section>
+
+    <aside class="game-side">
+      <div class="side-card">
+        <h3>How the excerpt grows</h3>
+        <p class="side-tip">Start with <b>1 second</b>. Each wrong guess extends the clip: <b>2s → 3s → 5s → 8s → 12s</b>. Six attempts total per song.</p>
+        <p class="side-tip" style="margin-top:8px">The play button resumes; the replay button starts the current excerpt again from the beginning.</p>
+      </div>
+      <div class="side-card">
+        <h3>Scoring &amp; hints</h3>
+        <p class="side-tip">A first-guess solve is worth <b>1,000 pts</b>. Every miss costs 150, and each revealed hint costs 75. Hints unlock automatically after a miss.</p>
+        <p class="side-tip" style="margin-top:8px">Endless chains solved songs. One failed song ends the run.</p>
+      </div>
+      <div class="side-card">
+        <h3>Your Songle</h3>
+        <div class="side-stats" id="songSideStats"></div>
+        <p class="tiny-note" style="margin-top:10px">Daily solve stats and endless records are stored separately from the other cabinets.</p>
+      </div>
+      <div class="side-card">
+        <h3>Authorised audio</h3>
+        <p class="side-tip">Every track streams from Newgrounds’ official CDN and links back to its audio page and artist profile. GD Arcade does not download, re-host or redistribute music.</p>
+      </div>
+    </aside>
+  </div>
+  <p class="game-footnote"><span>Audio: official Newgrounds streams, linked to each track and artist. No music files are hosted here.</span><span>Catalogue: 86 Geometry Dash tracks · snapshot 2026-11-15.</span></p>
+</main>
+<footer id="footerHost"></footer>
+
+<dialog id="helpDialog" aria-labelledby="helpTitle">
+  <div class="dialog-inner">
+    <div class="dialog-head"><div><h2 id="helpTitle">How to play Songle</h2><p>Name the track from a growing audio excerpt.</p></div><button class="x-btn" data-close aria-label="Close">✕</button></div>
+    <ol class="how-list">
+      <li><span class="num">1</span><span>Press <b>play</b> to hear the current excerpt. The first clip is only one second long.</span></li>
+      <li><span class="num">2</span><span>Search by song title or artist, choose a suggestion, then press <b>Guess</b>. You have six attempts.</span></li>
+      <li><span class="num">3</span><span>Every miss makes the next excerpt longer and unlocks a hint: artist, title shape, then level usage.</span></li>
+      <li><span class="num">4</span><span>Daily is one shared track per date. Practice is a single random song. Endless chains solved songs until one gets away.</span></li>
+    </ol>
+    <p class="arrow-note"><b>Audio note:</b> streams are supplied by Newgrounds. If your browser blocks playback, use the direct track link shown after the answer or open the Newgrounds audio page.</p>
+    <p class="arrow-note" style="color:var(--muted-2)">Music rights belong to the artists. GD Arcade links to their official pages and never hosts audio files.</p>
+  </div>
+</dialog>
+
+<dialog id="gameStatsDialog" aria-labelledby="statsTitle">
+  <div class="dialog-inner">
+    <div class="dialog-head"><div><h2 id="statsTitle">Songle stats</h2><p>Daily solves, hint use and endless records.</p></div><button class="x-btn" data-close aria-label="Close">✕</button></div>
+    <div class="stats-grid">
+      <div class="stat"><b id="statPlayed">0</b><span>Daily played</span></div>
+      <div class="stat"><b id="statWin">0%</b><span>Solve rate</span></div>
+      <div class="stat"><b id="statStreak">0</b><span>Streak</span></div>
+      <div class="stat"><b id="statBestScore">0</b><span>Best score</span></div>
+    </div>
+    <p class="dist-title">Solved on attempt</p>
+    <div class="dist" id="songDist"></div>
+    <p class="dist-title">Recent daily tracks</p>
+    <div class="dist" id="songHistory"></div>
+    <div class="stats-foot"><span class="stats-note">Best score covers daily and endless. Practice scores are not counted.</span><button class="link-btn" id="resetSongle">Reset Songle stats</button></div>
+  </div>
+</dialog>
+
+<script src="../data/levels.js"></script>
+<script src="../data/songs.js"></script>
+<script src="../data/demonlist.js"></script>
+<script src="../data/connections.js"></script>
+<script src="../js/core.js"></script>
+<script src="songle.js"></script>
+</body>
+</html>

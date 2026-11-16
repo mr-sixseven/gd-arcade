@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thumbnaille — GD Arcade</title>
+<meta name="description" content="Identify a Geometry Dash level from its real thumbnail. The image sharpens with every miss.">
+<meta name="theme-color" content="#05070e">
+<link rel="icon" href="../assets/icons/cube.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body class="thumbnaille-game">
+<a class="skip-link" href="#gameMain">Skip to game</a>
+<header id="siteHeader"></header>
+<main class="page" id="gameMain">
+  <section class="game-hero">
+    <div class="game-hero-main">
+      <span class="game-hero-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.5"/><path d="m21 15-5-5L5 20"/></svg></span>
+      <div>
+        <h1 class="game-title">Thumbnaille</h1>
+        <p class="game-sub">A real Geometry Dash thumbnail is hiding under the blur. Every miss sharpens the image. Easy, Normal and Hard change how much you see first.</p>
+      </div>
+    </div>
+    <div class="game-hero-side">
+      <span class="chip" id="dailyBadge" style="color:var(--purple);border-color:rgba(167,123,255,.3)">Daily image</span>
+      <button class="btn" type="button" data-open-help>How to play</button>
+      <button class="btn" type="button" data-open-game-stats>Stats</button>
+    </div>
+  </section>
+
+  <div class="game-layout">
+    <section class="game-main panel" aria-label="Thumbnaille game">
+      <div class="tabs" role="group" aria-label="Game mode">
+        <button class="tab" type="button" data-mode="daily" aria-pressed="true">Daily</button>
+        <button class="tab" type="button" data-mode="practice" aria-pressed="false">Practice</button>
+      </div>
+      <div class="toolbar">
+        <div class="toolbar-left"><span class="toolbar-label">Difficulty</span><div class="segmented" id="difficultyPicker" role="group" aria-label="Difficulty">
+          <button class="seg" type="button" data-diff="easy" aria-pressed="false">Easy</button>
+          <button class="seg" type="button" data-diff="normal" aria-pressed="true">Normal</button>
+          <button class="seg" type="button" data-diff="hard" aria-pressed="false">Hard</button>
+        </div></div>
+        <div class="toolbar-right"><span class="thumb-attempts" id="thumbAttempts" aria-label="Attempts remaining"></span><span class="chip" id="attemptChip">6 attempts</span></div>
+      </div>
+
+      <div class="thumb-stage" id="thumbStage" style="--blur:16px">
+        <div class="thumb-badge" id="thumbBadge">Daily image</div>
+        <div class="thumb-badge right" id="thumbDifficulty">Normal</div>
+        <div class="thumb-center"><span class="q">?</span></div>
+        <div id="stageImage"></div>
+      </div>
+      <div class="thumb-reveal-bar"><div class="bar"><i id="revealFill"></i></div><span id="revealLabel">16px blur</span></div>
+
+      <div class="search-row thumb-guess">
+        <div class="search-field">
+          <input id="thumbInput" class="search-input" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="thumbSuggestions" aria-activedescendant="" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="Name the level…">
+          <ul class="suggestions" id="thumbSuggestions" role="listbox" aria-label="Level suggestions"></ul>
+        </div>
+        <button class="btn primary" id="thumbGuessBtn" type="button">Guess</button>
+      </div>
+      <div class="thumb-hints" id="thumbHints" aria-live="polite"></div>
+      <div id="thumbResult" hidden></div>
+
+      <div class="actions">
+        <button class="btn primary" id="thumbShare" hidden type="button"><span data-icon="share"></span> Share result</button>
+        <button class="btn" id="thumbNew" type="button">New thumbnail</button>
+      </div>
+      <div class="next-row"><span>Next daily in</span><b data-countdown>--:--:--</b></div>
+    </section>
+
+    <aside class="game-side">
+      <div class="side-card">
+        <h3>How the reveal works</h3>
+        <p class="side-tip"><b>Easy</b> starts at 8px blur. <b>Normal</b> starts at 16px. <b>Hard</b> starts near 26px. Every wrong guess lowers the blur and fills the reveal bar.</p>
+        <p class="side-tip" style="margin-top:8px">Hints unlock automatically: creator after 2 misses, difficulty after 3, song after 4.</p>
+      </div>
+      <div class="side-card">
+        <h3>Your Thumbnaille</h3>
+        <div class="side-stats" id="thumbSideStats"></div>
+        <p class="tiny-note" style="margin-top:10px">Correct guesses and average attempts are daily-only stats.</p>
+      </div>
+    </aside>
+  </div>
+  <p class="game-footnote"><span>Thumbnails: levelthumbs.prevter.me (real community thumbnails, loaded by level ID).</span><span>If an artist removes a thumbnail, the card shows “Thumbnail unavailable”.</span></p>
+</main>
+<footer id="footerHost"></footer>
+
+<dialog id="helpDialog" aria-labelledby="helpTitle">
+  <div class="dialog-inner">
+    <div class="dialog-head"><div><h2 id="helpTitle">How to play Thumbnaille</h2><p>Name the level behind the thumbnail.</p></div><button class="x-btn" data-close aria-label="Close">✕</button></div>
+    <ol class="how-list">
+      <li><span class="num">1</span><span>A real Geometry Dash level thumbnail is loaded from levelthumbs.prevter.me. It starts blurred.</span></li>
+      <li><span class="num">2</span><span>Type a level name and pick it from the list. You have <b>six attempts</b>.</span></li>
+      <li><span class="num">3</span><span>Every wrong guess reveals more of the image. Hints for creator, difficulty and song unlock as you miss.</span></li>
+      <li><span class="num">4</span><span>Daily is one shared image per date. Practice is endless and never changes your stats.</span></li>
+    </ol>
+    <p class="arrow-note"><b>Difficulty</b> changes the starting blur only. It does not change the daily answer or the stat rules.</p>
+  </div>
+</dialog>
+
+<dialog id="gameStatsDialog" aria-labelledby="statsTitle">
+  <div class="dialog-inner">
+    <div class="dialog-head"><div><h2 id="statsTitle">Thumbnaille stats</h2><p>Daily rounds only.</p></div><button class="x-btn" data-close aria-label="Close">✕</button></div>
+    <div class="stats-grid">
+      <div class="stat"><b id="statPlayed">0</b><span>Played</span></div>
+      <div class="stat"><b id="statWin">0%</b><span>Win rate</span></div>
+      <div class="stat"><b id="statStreak">0</b><span>Streak</span></div>
+      <div class="stat"><b id="statAvg">0</b><span>Avg. attempts</span></div>
+    </div>
+    <p class="dist-title">Attempt distribution</p>
+    <div class="dist" id="thumbDist"></div>
+    <div class="stats-foot"><span class="stats-note">Correct guesses only</span><button class="link-btn" id="resetThumb">Reset Thumbnaille stats</button></div>
+  </div>
+</dialog>
+
+<script src="../data/levels.js"></script>
+<script src="../data/songs.js"></script>
+<script src="../data/demonlist.js"></script>
+<script src="../data/connections.js"></script>
+<script src="../js/core.js"></script>
+<script src="thumbnaille.js"></script>
+</body>
+</html>
