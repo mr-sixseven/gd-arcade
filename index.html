@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GD Arcade — six daily Geometry Dash mini-games</title>
+<meta name="description" content="Six independent daily Geometry Dash games: guess levels, group them, identify thumbnails, compare stats, sort demons and guess songs.">
+<meta name="theme-color" content="#05070e">
+<link rel="icon" href="assets/icons/cube.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip-link" href="#games">Skip to games</a>
+<header id="siteHeader"></header>
+
+<main class="wrap" id="main">
+  <section class="hero" aria-labelledby="arcadeTitle">
+    <p class="eyebrow">Geometry Dash mini-game collection · Season 01</p>
+    <h1 class="hero-title" id="arcadeTitle">Six ways to prove<br>you know GD.<span class="thin">DAILY · PRACTICE · FOREVER</span></h1>
+    <p class="hero-sub">A neon arcade built on real Geometry Dash levels, demons, creators, thumbnails and songs. Every game is completely independent — its own daily puzzle, its own streak, its own rules.</p>
+    <div class="hero-actions">
+      <a class="btn primary" href="#games">Choose a game <span aria-hidden="true">→</span></a>
+      <button class="btn ghost" type="button" data-open-help>How the arcade works</button>
+    </div>
+    <div class="hero-stats" id="heroStats" aria-label="Arcade statistics"></div>
+  </section>
+
+  <section class="dashboard-grid" id="daily" aria-label="Daily challenge overview">
+    <article class="daily-card">
+      <div class="section-head" style="margin:0 0 8px;align-items:flex-start">
+        <div>
+          <p class="section-kicker" style="color:var(--green)">Today at the arcade</p>
+          <h2>Daily challenge board</h2>
+          <p>Each card below has its own puzzle for <b id="todayLabel">today</b>. Finish one without touching the other five.</p>
+        </div>
+      </div>
+      <div class="daily-progress">
+        <div class="progress-ring" id="dailyRing" style="--p:0"><span><b id="dailyCount">0</b><small>/6</small></span></div>
+        <div class="daily-list" id="dailyList"></div>
+      </div>
+      <div class="daily-reset"><span>Next daily reset in</span><b data-countdown>--:--:--</b></div>
+    </article>
+    <aside class="overall-card">
+      <h2 class="overall-title"><span data-icon="trophy"></span> Arcade snapshot</h2>
+      <div class="overall-big"><b id="overallWins">0</b><span>daily wins across all games</span></div>
+      <div class="overall-list" id="overallList"></div>
+      <p class="overall-note">Arcade snapshots count completions only. Scores and streaks are never combined between games.</p>
+    </aside>
+  </section>
+
+  <section id="games" aria-labelledby="gamesTitle">
+    <div class="section-head">
+      <div>
+        <p class="section-kicker">Pick your poison</p>
+        <h2 class="section-title" id="gamesTitle">The six cabinet games</h2>
+        <p class="section-sub">Each cabinet opens its own dedicated interface, stats, daily seed and practice mode.</p>
+      </div>
+      <a class="section-link" href="#daily">Today’s progress →</a>
+    </div>
+    <div class="games-grid" id="gamesGrid"></div>
+  </section>
+
+  <section aria-labelledby="independenceTitle" style="margin-top:40px">
+    <div class="panel dim">
+      <div class="section-head" style="margin:0 0 10px">
+        <div>
+          <p class="section-kicker" style="color:var(--orange)">No shared progression</p>
+          <h2 class="section-title" id="independenceTitle" style="font-size:22px">Six games. Six brains.</h2>
+        </div>
+      </div>
+      <p class="section-sub" style="max-width:760px">GD-le keeps a guess board. Connections keeps mistakes. Thumbnaille keeps attempts. Higher / Lower keeps a run streak. Demon Order keeps a score. Songle keeps audio attempts. They share the level database and the visual language, but no win unlocks, modifies or resets another game. Daily answers are generated from the local date, so every player gets the same puzzle on the same day.</p>
+    </div>
+  </section>
+</main>
+
+<footer id="footerHost"></footer>
+
+<dialog id="helpDialog" aria-labelledby="helpTitle">
+  <div class="dialog-inner">
+    <div class="dialog-head">
+      <div>
+        <h2 id="helpTitle">How GD Arcade works</h2>
+        <p>Six independent daily games, one shared level database.</p>
+      </div>
+      <button class="x-btn" data-close aria-label="Close">✕</button>
+    </div>
+    <ol class="how-list">
+      <li><span class="num">1</span><span><b>Choose a cabinet.</b> Every game has a daily puzzle and a practice mode. Daily answers are deterministic: the same date gives the same puzzle to everyone.</span></li>
+      <li><span class="num">2</span><span><b>No cross-game progression.</b> Streaks, scores, mistakes, attempts and completion status are stored separately per game in your browser.</span></li>
+      <li><span class="num">3</span><span><b>Real data where possible.</b> Levels come from GDBrowser, rankings from Pointercrate, thumbnails from levelthumbs.prevter.me and songs stream from Newgrounds.</span></li>
+      <li><span class="num">4</span><span><b>Missing data is labelled.</b> If a thumbnail, stat or audio source is unavailable, the interface says so instead of inventing a value.</span></li>
+    </ol>
+    <p class="arrow-note"><b>Accessibility:</b> keyboard focus states, searchable comboboxes, arrow-button sorting, reduced-motion support and a settings panel are built in.</p>
+    <p class="arrow-note" style="color:var(--muted-2)">Unofficial fan project. Geometry Dash is a game by RobTop Games. Not affiliated with RobTop, GDBrowser, Pointercrate, Newgrounds or thumbnail artists.</p>
+  </div>
+</dialog>
+
+<script src="data/levels.js"></script>
+<script src="data/songs.js"></script>
+<script src="data/demonlist.js"></script>
+<script src="data/connections.js"></script>
+<script src="js/core.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
